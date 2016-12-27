@@ -1,0 +1,83 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.scm.calendar.CourseTableFragment">
+    <RelativeLayout
+        android:id="@+id/fragmentToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/colorPrimary"
+        android:layout_alignParentTop="true">
+        <TextView
+            android:id="@+id/courseTableTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:textColor="@color/white"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_alignParentStart="true"
+            android:gravity="center"
+            android:textSize="30sp"
+            android:text="@string/test" />
+        <Button
+            android:id="@+id/courseTableSetting"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginEnd="10dp"
+            android:layout_alignParentEnd="true"
+            android:text="@string/setting"
+            android:textColor="@color/white"
+            android:background="@color/transparent"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/courseTable"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/fragmentToolbar"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin">
+        <com.view.TableHeader
+            android:id="@+id/tableHeader"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_width="40dp"
+            android:layout_height="60dp" />
+        <com.view.WeekDateHeader
+            android:id="@+id/weekDateHeader"
+            android:layout_toEndOf="@id/tableHeader"
+            android:layout_height="30dp"
+            android:layout_width="match_parent" />
+        <com.view.WeekHeader
+            android:id="@+id/weekHeader"
+            android:layout_height="30dp"
+            android:layout_width="match_parent"
+            android:layout_toEndOf="@+id/tableHeader"
+            android:layout_below="@+id/weekDateHeader" />
+        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_below="@id/tableHeader"
+            android:layout_gravity="fill"
+            android:scrollbars="vertical"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <com.view.RowHeader
+                    android:id="@+id/rowHeader"
+                    android:layout_width="40dp"
+                    android:layout_height="600dp" />
+                <com.view.CourseTableContainer
+                    android:id="@+id/courseTableContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignBottom="@id/rowHeader"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_toEndOf="@+id/rowHeader" />
+            </RelativeLayout>
+        </ScrollView>
+    </RelativeLayout>
+</RelativeLayout>
