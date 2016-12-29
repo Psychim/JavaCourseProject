@@ -177,14 +177,11 @@ public class CourseTableCreator implements Callable<CourseTable>{
         ct.setAcaYear(queryAcademicYear);
         return ct;
     }
-    @Override
-    public CourseTable call(){
+    public CourseTable obtainCourseTable(){
+        if(queryStudentId==null||queryStudentId.isEmpty()||queryAcademicYear==null||queryAcademicYear.isEmpty())
+            return null;
         CourseTable ct=null;
         StudentQuery sq=new StudentQuery(context);
-        ct=sq.getCourseTable(queryStudentId,queryAcademicYear);
-        if(ct!=null) {
-            return ct;
-        }
         String page=sendRequest();
         if(page!=null&&!page.isEmpty()){
             ct=CreateTable(getArrangement(page),getCourses(page));
@@ -192,5 +189,17 @@ public class CourseTableCreator implements Callable<CourseTable>{
             return ct;
         }
         else return null;
+    }
+    @Override
+    public CourseTable call(){
+        if(queryStudentId==null||queryStudentId.isEmpty()||queryAcademicYear==null||queryAcademicYear.isEmpty())
+            return null;
+        CourseTable ct=null;
+        StudentQuery sq=new StudentQuery(context);
+        ct=sq.getCourseTable(queryStudentId,queryAcademicYear);
+        if(ct!=null) {
+            return ct;
+        }
+        else return obtainCourseTable();
     }
 }

@@ -9,6 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:gravity="center_horizontal"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.scm.calendar.SettingsActivity"
     tools:showIn="@layout/activity_settings">
@@ -16,11 +17,81 @@
         android:layout_width="wrap_content"
         android:layout_height="30dp"
         android:id="@+id/stuIDLabel"
-        android:text="一卡通号"/>
+        android:text="@string/stuID"
+        android:gravity="center"
+        android:layout_alignParentTop="true"/>
     <EditText
-        android:layout_toEndOf="@+id/stuIDLabel"
-        android:layout_width="100dp"
-        android:layout_height="40dp"
-        android:inputType=""
-        android:id="@+id/stuIDEdit" />
+        android:layout_width="150dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="14dp"
+        android:id="@+id/stuIDText"
+        android:inputType="number"
+        android:gravity="center"
+        android:background="@color/transparent"
+        android:layout_alignTop="@+id/stuIDLabel"
+        android:layout_toEndOf="@+id/stuIDLabel" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:id="@+id/acaYearLabel"
+        android:text="@string/acaYear"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/stuIDLabel"
+        android:layout_alignEnd="@+id/stuIDLabel"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:id="@+id/preWeekLabel"
+        android:text="@string/preWeek"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/acaYearLabel"
+        android:layout_alignEnd="@+id/stuIDLabel"/>
+
+    <Spinner
+        android:layout_width="150dp"
+        android:layout_height="30dp"
+        android:id="@+id/preWeekspinner"
+        android:gravity="center"
+        android:layout_alignTop="@+id/preWeekLabel"
+        android:layout_toEndOf="@+id/preWeekLabel"
+        android:layout_alignStart="@+id/stuIDText"/>
+    <TextView
+        android:layout_width="150dp"
+        android:layout_height="30dp"
+        android:id="@+id/preDateText"
+        android:gravity="center"
+        android:layout_below="@+id/preWeekLabel"
+        android:layout_alignStart="@+id/stuIDLabel"
+        android:layout_alignEnd="@+id/preWeekspinner" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:padding="0dp"
+        android:gravity="center"
+        android:id="@+id/modifyButton"
+        android:text="@string/modify"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/preDateText"
+        android:layout_alignStart="@+id/preWeekspinner" />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/preWeekLabel"
+        android:id="@+id/acaYearspinner"
+        android:layout_alignStart="@+id/preWeekspinner"
+        android:layout_alignEnd="@+id/preWeekspinner" />
+
+    <Button
+        android:text="@string/updateCourseTable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/updateButton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
 </RelativeLayout>

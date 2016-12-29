@@ -4,17 +4,21 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.example.scm.calendar.R;
 import com.util.Constant.*;
 import com.util.coursetable.Course;
 import com.util.coursetable.CourseInstance;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created by aiocac on 2016/12/19.
@@ -22,7 +26,8 @@ import java.util.Map;
 
 public class CourseTableContainer extends ViewGroup {
     private int lessonNum;
-    private static final int[] COLORS=new int[]{Color.RED,Color.BLUE,Color.YELLOW,Color.GREEN};
+    private static final int[] drawable={R.drawable.course_item_01,R.drawable.course_item_02,R.drawable.course_item_03
+            ,R.drawable.course_item_04,R.drawable.course_item_05,R.drawable.course_item_06};
     private int colorIndex;
     private int week;
     Map<Course,Integer> ColorMap;
@@ -52,7 +57,7 @@ public class CourseTableContainer extends ViewGroup {
      * added.
      *
      * @param context The Context the view is running in, through which it can
-     *                access the current theme, resources, etc.
+     *                access the c Drawableurrent theme, resources, etc.
      * @param attrs   The attributes of the XML tag that is inflating the view.
      * @see #View(Context, AttributeSet, int)
      */
@@ -91,15 +96,24 @@ public class CourseTableContainer extends ViewGroup {
         */
         int uWidth=(r-l)/7;     //a unit's width
         int uHeight=(b-t)/lessonNum;    //a unit's height
-        for(int i=0,size=getChildCount();i<size;i++){
-            CourseItem ci=(CourseItem)getChildAt(i);
-            _WEEKDAY wd=ci.getWeekday();
-            int segStart=ci.getSegStart();
-            int segEnd=ci.getSegEnd();
-            int thisl=wd.ordinal()*uWidth;
-            int thist=(segStart-1)*uHeight;
-            int thisb=segEnd*uHeight;
-            ci.layout(thisl, thist, thisl+uWidth, thisb);
+        for(int i=0,size=getChildCount();i<size;i++) {
+            View view = getChildAt(i);
+            if (view instanceof CourseItem) {
+                CourseItem ci = (CourseItem)view;
+                _WEEKDAY wd = ci.getWeekday();
+                int segStart = ci.getSegStart();
+                int segEnd = ci.getSegEnd();
+                int thisl = wd.ordinal() * uWidth;
+                int thist = (segStart - 1) * uHeight;
+                int thisb = segEnd * uHeight;
+                ci.layout(thisl, thist, thisl + uWidth, thisb);
+            }
+            else if(view instanceof TextView&&size==1){
+                view.layout(0,0,r-l,b-t);
+            }
+            else{
+                view.layout(0,0,0,0);
+            }
         }
     }
 
@@ -119,9 +133,9 @@ public class CourseTableContainer extends ViewGroup {
         courseItem.setCourseInstance(pci);
         if(!ColorMap.containsKey(pci.C)){
             ColorMap.put(pci.C,colorIndex);
-            colorIndex=(colorIndex+1)%COLORS.length;
+            colorIndex=(colorIndex+1)%drawable.length;
         }
-        courseItem.setBackgroundColor(COLORS[ColorMap.get(pci.C)]);
+        courseItem.setBackgroundResource(drawable[ColorMap.get(pci.C)]);
         courseItem.setTextSize(10);
         addView(courseItem);
     }

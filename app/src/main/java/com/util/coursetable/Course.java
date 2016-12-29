@@ -45,11 +45,18 @@ public class Course {
     }
     @Override
     public boolean equals(Object obj){
-        Course cs=(Course)obj;
-        return coursename==cs.coursename&&
-                weekStart==cs.weekStart&&
-                weekEnd==cs.weekEnd&&
-                teacher==cs.teacher&&
-                credit==cs.credit;
+        if(obj instanceof Course) {
+            Course cs = (Course) obj;
+            return coursename.equals(cs.coursename)  &&
+                    weekStart == cs.weekStart &&
+                    weekEnd == cs.weekEnd &&
+                    teacher.equals( cs.teacher) &&
+                    credit == cs.credit;
+        }
+        else return false;
+    }
+    @Override
+    public int hashCode(){
+        return new String(coursename+teacher).hashCode();
     }
 }

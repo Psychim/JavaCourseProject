@@ -1,11 +1,19 @@
 package com.util;
 
+import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 
 import com.example.scm.calendar.CourseTableFragment;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.util.Date;
 import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by aiocac on 2016/12/27.
@@ -14,14 +22,63 @@ import java.util.Calendar;
 public class Global {
     private static Global instance=null;
     private Calendar calendar;
-    private String stuID="213150865";
-    private String acaYear="16-17-2";
+    private String stuID;
+    private String acaYear;
     private Calendar FirstMonday;
+    private Context context=null;
     private CourseTableFragment courseTableFragment=null;
     private Global(){
         calendar=Calendar.getInstance();
-        FirstMonday=Calendar.getInstance();
+        stuID="";
+        acaYear="";
         setPresentWeek(1);
+    }
+    public void getSavedInfo(Context context){
+        File file=new File(context.getFilesDir().getAbsolutePath()+"/"+"global.conf");
+        String text;
+        Matcher matcher;
+        if(file.exists())
+            try{
+                FileInputStream fileInputStream=new FileInputStream(file);
+                byte[] buffer=new byte[fileInputStream.available()];
+                fileInputStream.read(buffer);
+                fileInputStream.close();
+                text=new String(buffer);
+                matcher= Pattern.compile("Student_ID\\s*?=\\s*?([0-9]+)\\r?\\n").matcher(text);
+                if(matcher.find()){
+                    stuID=matcher.group(1);
+                }
+                matcher=Pattern.compile("Academic_Year\\s*?=\\s*?([0-9]{2}-[0-9]{2}-[1-3])\\r?\\n").matcher(text);
+                if(matcher.find()){
+                    acaYear=matcher.group(1);
+                }
+                matcher=Pattern.compile("First_Monday\\s*?=\\s*?([0-9]+?)\\r?\\n").matcher(text);
+                if(matcher.find()){
+                    if(FirstMonday==null)
+                        FirstMonday=Calendar.getInstance();
+                    FirstMonday.setTimeInMillis(Long.parseLong(matcher.group(1)));
+                }
+            }catch(Exception e){
+                System.out.println(e.getClass().getName()+": "+e.getMessage());
+                e.printStackTrace();
+            }
+    }
+    public void SaveInfo(Context context){
+        File file=new File(context.getFilesDir().getAbsolutePath()+"/"+"global.conf");
+        String toWrite="";
+        toWrite+="Student_ID = "+stuID+"\n";
+        toWrite+="Academic_Year = "+acaYear+"\n";
+        toWrite+="First_Monday = "+FirstMonday.getTimeInMillis()+"\n";
+        try {
+            if (!file.exists())
+                file.createNewFile();
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            byte[] buffer = toWrite.getBytes();
+            fileOutputStream.write(buffer);
+        }catch(Exception e){
+            System.out.println(e.getClass().getName()+": "+e.getMessage());
+            e.printStackTrace();
+        }
     }
     public void setCourseTableFragment(CourseTableFragment pCTF){
         courseTableFragment=pCTF;
@@ -39,6 +96,11 @@ public class Global {
         if(courseTableFragment!=null)
             courseTableFragment.resetDate();
     }
+    public void setTime(long date){
+        calendar.setTimeInMillis(date);
+        if(courseTableFragment!=null)
+            courseTableFragment.resetDate();
+    }
     public long getTime(){
         return calendar.getTimeInMillis();
     }
@@ -49,6 +111,8 @@ public class Global {
         return calendar.get(Calendar.DATE);
     }
     public void setPresentWeek(int pWeek){
+        if(FirstMonday==null)
+            FirstMonday=Calendar.getInstance();
         try {
             if(pWeek<1) throw new IllegalArgumentException("当前周不合法");
             FirstMonday.setTime(calendar.getTime());
@@ -72,6 +136,12 @@ public class Global {
             Lookover.add(Calendar.DATE,7);
         }
         return result;
+    }
+    public void setIDandYear(String pStuID,String pAcaYear){
+        stuID=pStuID;
+        acaYear=pAcaYear;
+        if(courseTableFragment!=null)
+            courseTableFragment.resetCourseTable();
     }
     public void setAcaYear(String pAcaYear){
         acaYear=pAcaYear;
@@ -116,5 +186,11 @@ public class Global {
             dateArray[today+i]=tmpCalendar.get(Calendar.DAY_OF_MONTH);
         }
         return dateArray;
+    }
+    public String getDateString(){
+        return getYear()+"年"+(getMonth()+1)+"月"+getDate()+"日";
+    }
+    public void updateCourseTable(){
+        courseTableFragment.updateCourseTable();
     }
 }

@@ -3,6 +3,10 @@ package com.util.sql;
 import android.content.Context;
 import android.database.Cursor;
 
+import java.util.Date;
+import java.text.SimpleDateFormat;
+
+import com.util.affair.Affair;
 import com.util.coursetable.Arrangement;
 import com.util.coursetable.Course;
 import com.util.coursetable.CourseInstance;
@@ -32,6 +36,10 @@ public class StudentQuery extends SqliteQuery{
     final private static String SEG_END="SEG_END";
     final private static String CLASSROOM="CLASSROOM";
     final private static String ACADEMICYEAR="ACADEMIC_YEAR";
+    final private static String ID="ID";
+    final private static String CONTENT="CONTENT";
+    final private static String DATE="DATE";
+    final private static String TIME="TIME";
     public StudentQuery(Context pContext) {
         super(pContext);
         db= SqliteManager.getInstance().getConnection(context.getFilesDir().getAbsolutePath()+"/"+DBName);
@@ -55,6 +63,15 @@ public class StudentQuery extends SqliteQuery{
                     CLASSROOM+" TEXT NOT NULL,"+
                     STUCARD_ID+" CHARACTER(9) NOT NULL," +
                     ACADEMICYEAR+" CHARCATER(7) NOT NULL)";
+            db.execSQL(query);
+        }
+        if (!isTableExist("AFFAIR")) {
+            String query = "CREATE TABLE AFFAIR" +
+                    "("+ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    CONTENT+" TEXT NOT NULL," +
+                    DATE+" DATE NOT NULL" +
+                    TIME+" TIME NOT NULL" +
+                    STUCARD_ID+" CHARACTER(9) NOT NULL)";
             db.execSQL(query);
         }
     }
@@ -125,5 +142,40 @@ public class StudentQuery extends SqliteQuery{
         for (CourseInstance ci : ct) {
             InsertCourseInstance(ci, stuID,acaYear);
         }
+    }
+    public void saveAffair(Affair affair,String stuID){
+        String query="INSERT INTO TABLE AFFAIR ("+CONTENT+","+DATE+","+TIME+","+STUCARD_ID+")"+
+                " VALUES(?,?,?,?)";
+        db.execSQL(query,new String[]{affair.getContent(),affair.getDateString(),
+                affair.getTimeString(),stuID});
+    }
+    public Affair[] getAffairs(String stuID, Date date){
+        String query="SELECT CONTENT,REMINDTIME FROM AFFAIR WHERE "+STUCARD_ID +
+                "=? AND "+DATE+"=?";
+        SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
+        String dateString=dateFormat.format(date);
+        Cursor cursor=db.rawQuery(query,new String[]{stuID,dateString});
+        int size=cursor.getCount();
+        if(size>0) {
+            Affair[] affairs = new Affair[size];
+            cursor.moveToFirst();
+            for(int i=0;i<size;i++,cursor.moveToNext()){
+                try {
+                    String content = cursor.getString(cursor.getColumnIndex(CONTENT));
+                    String timeString = cursor.getString(cursor.getColumnIndex(TIME));
+                    String datetimeString = dateString + " " + timeString;
+                    SimpleDateFormat datetimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    Date datetime = datetimeFormat.parse(datetimeString);
+                    affairs[i] = new Affair();
+                    affairs[i].setContent(content);
+                    affairs[i].setTime(datetime);
+                }catch(Exception e){
+                    System.out.println(e.getClass().getName()+": "+e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+            return affairs;
+        }
+        else return null;
     }
 }
