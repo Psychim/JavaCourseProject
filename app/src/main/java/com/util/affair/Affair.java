@@ -8,7 +8,8 @@ import java.util.Calendar;
  * Created by aiocac on 2016/12/29.
  */
 
-public class Affair {
+public class Affair implements Comparable<Affair>{
+    private Integer ID;
     private Calendar time;
     private String content;
     public Affair(){
@@ -37,7 +38,33 @@ public class Affair {
         return dateFormat.format(time.getTime());
     }
     public String getTimeString(){
-        SimpleDateFormat timeFormat=new SimpleDateFormat("HH:mm:ss");
+        SimpleDateFormat timeFormat=new SimpleDateFormat("HH:mm");
         return timeFormat.format(time.getTime());
+    }
+    public void setID(Integer pID){
+        ID=pID;
+    }
+    public Integer getID(){
+        return ID;
+    }
+    public Integer getHour(){
+        Integer hour=time.get(Calendar.HOUR);
+        if(time.get(Calendar.AM_PM)==Calendar.PM)
+            hour+=12;
+        return hour;
+    }
+    public Integer getMinute(){
+        return time.get(Calendar.MINUTE);
+    }
+    public long getTime(){
+        return time.getTimeInMillis();
+    }
+
+    @Override
+    public int compareTo(Affair o) {
+        long dif=this.getTime()-o.getTime();
+        if(dif>0) return 1;
+        else if(dif<0) return -1;
+        else return 0;
     }
 }

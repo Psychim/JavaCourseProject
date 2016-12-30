@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/remindTimeLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:background="@drawable/border"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/remindtime"
+        android:gravity="center"
+        android:padding="5dp"/>
+    <TextView
+        android:id="@+id/affairLabel"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="@drawable/border"
+        android:layout_alignTop="@+id/remindTimeLabel"
+        android:layout_toEndOf="@+id/remindTimeLabel"
+        android:text="@string/affair"
+        android:gravity="center"
+        android:padding="5dp"/>
+    <TextView
+        android:id="@+id/remindTimeText"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:background="#e0e0e0"
+        android:layout_below="@+id/remindTimeLabel"
+        android:layout_alignStart="@+id/remindTimeLabel"
+        android:layout_alignEnd="@+id/remindTimeLabel"
+        android:gravity="center"
+        android:padding="5dp"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@+id/affairLabel"
+        android:layout_alignStart="@+id/affairLabel"
+        android:layout_alignEnd="@+id/affairLabel">
+    <TextView
+        android:id="@+id/affairText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="5dp"/>
+    </ScrollView>
+</RelativeLayout>

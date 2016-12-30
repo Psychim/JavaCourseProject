@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_add_affair"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.example.scm.calendar.AddAffairActivity"
+    tools:showIn="@layout/activity_add_affair">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:id="@+id/timeLabel"
+        android:text="@string/remindtime"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center"/>
+    <Spinner
+        android:id="@+id/hourSpinner"
+        android:layout_width="50dp"
+        android:layout_height="40dp"
+        android:layout_alignTop="@+id/timeLabel"
+        android:layout_toEndOf="@+id/timeLabel"
+        android:layout_marginStart="10dp"/>
+
+    <TextView
+        android:id="@+id/colon"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text=":"
+        android:gravity="center"
+        android:layout_alignTop="@+id/timeLabel"
+        android:layout_toEndOf="@+id/hourSpinner"
+        android:layout_marginStart="5dp"/>
+
+    <Spinner
+        android:layout_width="50dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_alignTop="@+id/timeLabel"
+        android:layout_toEndOf="@+id/colon"
+        android:id="@+id/minuteSpinner"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:id="@+id/affairLabel"
+        android:text="@string/affair"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/timeLabel"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:inputType="textMultiLine"
+        android:contentDescription="@string/affair"
+        android:ems="10"
+        android:gravity="top"
+        android:layout_below="@+id/affairLabel"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/edit_view_border"
+        android:id="@+id/affairContent" />
+</RelativeLayout>

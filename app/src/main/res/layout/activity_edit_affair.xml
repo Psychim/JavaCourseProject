@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.example.scm.calendar.SettingsActivity">
+    tools:context="com.example.scm.calendar.EditAffairActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -22,12 +22,11 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="@string/returnString"
-            android:id="@+id/returnButton"
+            android:text="@string/complete"
             android:background="@color/transparent"
-            android:layout_gravity="end"/>
+            android:layout_gravity="end"
+            android:id="@+id/completeButton"/>
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_settings" />
-
+    <include layout="@layout/content_edit_affair" />
 </android.support.design.widget.CoordinatorLayout>

@@ -5,6 +5,8 @@ import android.database.Cursor;
 
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.util.affair.Affair;
 import com.util.coursetable.Arrangement;
@@ -69,8 +71,8 @@ public class StudentQuery extends SqliteQuery{
             String query = "CREATE TABLE AFFAIR" +
                     "("+ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
                     CONTENT+" TEXT NOT NULL," +
-                    DATE+" DATE NOT NULL" +
-                    TIME+" TIME NOT NULL" +
+                    DATE+" DATE NOT NULL," +
+                    TIME+" TIME NOT NULL," +
                     STUCARD_ID+" CHARACTER(9) NOT NULL)";
             db.execSQL(query);
         }
@@ -143,32 +145,44 @@ public class StudentQuery extends SqliteQuery{
             InsertCourseInstance(ci, stuID,acaYear);
         }
     }
+    public void updateAffair(Affair affair){
+        String query="UPDATE AFFAIR SET "+CONTENT+"=?, "+DATE+"=?,"+TIME+"=? WHERE "+ID +"=?";
+        db.execSQL(query,new String[]{affair.getContent(),affair.getDateString(),affair.getTimeString(),
+            affair.getID().toString()});
+    }
+    public void deleteAffair(Affair affair){
+        String query="DELETE FROM AFFAIR WHERE "+ID+"=?";
+        db.execSQL(query,new String[]{affair.getID().toString()});
+    }
     public void saveAffair(Affair affair,String stuID){
-        String query="INSERT INTO TABLE AFFAIR ("+CONTENT+","+DATE+","+TIME+","+STUCARD_ID+")"+
+        String query="INSERT INTO AFFAIR ("+CONTENT+","+DATE+","+TIME+","+STUCARD_ID+")"+
                 " VALUES(?,?,?,?)";
         db.execSQL(query,new String[]{affair.getContent(),affair.getDateString(),
                 affair.getTimeString(),stuID});
     }
-    public Affair[] getAffairs(String stuID, Date date){
-        String query="SELECT CONTENT,REMINDTIME FROM AFFAIR WHERE "+STUCARD_ID +
+    public List<Affair> getAffairs(String stuID, Date date){
+        String query="SELECT "+ID+","+ CONTENT+","+TIME+" FROM AFFAIR WHERE "+STUCARD_ID +
                 "=? AND "+DATE+"=?";
         SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
         String dateString=dateFormat.format(date);
         Cursor cursor=db.rawQuery(query,new String[]{stuID,dateString});
         int size=cursor.getCount();
         if(size>0) {
-            Affair[] affairs = new Affair[size];
+            List<Affair> affairs =new LinkedList<Affair>();
             cursor.moveToFirst();
             for(int i=0;i<size;i++,cursor.moveToNext()){
                 try {
+                    Integer id=cursor.getInt(cursor.getColumnIndex(ID));
                     String content = cursor.getString(cursor.getColumnIndex(CONTENT));
                     String timeString = cursor.getString(cursor.getColumnIndex(TIME));
                     String datetimeString = dateString + " " + timeString;
-                    SimpleDateFormat datetimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    SimpleDateFormat datetimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                     Date datetime = datetimeFormat.parse(datetimeString);
-                    affairs[i] = new Affair();
-                    affairs[i].setContent(content);
-                    affairs[i].setTime(datetime);
+                    Affair affair= new Affair();
+                    affair.setContent(content);
+                    affair.setTime(datetime);
+                    affair.setID(id);
+                    affairs.add(affair);
                 }catch(Exception e){
                     System.out.println(e.getClass().getName()+": "+e.getMessage());
                     e.printStackTrace();

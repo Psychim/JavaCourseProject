@@ -1,10 +1,13 @@
 package com.util;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.Service;
 import android.content.Context;
 import android.util.Log;
 
 import com.example.scm.calendar.CourseTableFragment;
+import com.example.scm.calendar.MainActivity;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,8 +28,8 @@ public class Global {
     private String stuID;
     private String acaYear;
     private Calendar FirstMonday;
-    private Context context=null;
     private CourseTableFragment courseTableFragment=null;
+    private MainActivity.NotificationService notificationService;
     private Global(){
         calendar=Calendar.getInstance();
         stuID="";
@@ -192,5 +195,11 @@ public class Global {
     }
     public void updateCourseTable(){
         courseTableFragment.updateCourseTable();
+    }
+    public void setNotificationService(MainActivity.NotificationService service){
+        notificationService=service;
+    }
+    public void refreshNotification(){
+        notificationService.refreshAffairs();
     }
 }

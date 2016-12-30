@@ -11,11 +11,17 @@
     <string name="preWeek">当前周</string>
     <string name="returnString">返回</string>
     <string name="updateCourseTable">更新课表</string>
+    <string name="remindtime">提醒时间</string>
+    <string name="affair">事务</string>
+    <string name="complete">完成</string>
+    <string name="delete">删除</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_main2">Main2Activity</string>
     <string name="title_activity_for_reference">ActivityForReference</string>
     <string name="title_activity_settings">管理</string>
+    <string name="title_activity_add_affair">添加事务</string>
+    <string name="title_activity_edit_affair">编辑事务</string>
 
 
     <!-- Strings related to Settings -->
