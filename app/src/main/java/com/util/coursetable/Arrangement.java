@@ -7,12 +7,21 @@ import com.util.Constant.*;
  */
 
 /**
- * course arrangement
+ * （课程的）安排
  */
 public class Arrangement {
+    /**
+     * 周几
+     */
      _WEEKDAY weekday;
+    /**
+     * 课程从segStart节开始，到segEnd节下课
+     */
     int segStart;
     int segEnd;
+    /**
+     * 教室
+     */
     String classroom;
     public Arrangement(){
     }

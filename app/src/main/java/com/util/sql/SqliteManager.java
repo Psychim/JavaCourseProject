@@ -11,9 +11,16 @@ import java.util.Map;
  * Created by aiocac on 2016/12/23.
  */
 
+/**
+ * 管理数据库连接
+ */
 public class SqliteManager {
     private static SqliteManager instance=null;
     private Map<String,SQLiteDatabase> dbs;
+
+    /**
+     * TODO 返回databasename对应的数据库连接
+     */
     public SQLiteDatabase getConnection(String databasename){
         SQLiteDatabase db;
         if(databasename==null)
@@ -26,6 +33,11 @@ public class SqliteManager {
         System.out.println("Opened database "+databasename+" successfullly");
         return db;
     }
+
+    /**
+     * TODO 返回SqliteManager的单实例
+     * @return
+     */
     public static SqliteManager getInstance(){
         synchronized (SqliteManager.class){
             if(instance==null){

@@ -17,6 +17,9 @@ import android.view.WindowManager;
 
 import com.example.scm.calendar.R;
 
+/**
+ * 列头，显示一周的星期，Global时间用特殊颜色标记
+ */
 public class WeekHeader extends ViewGroup{
     protected String[] weekString=new String[]{"一","二","三","四","五","六","日"};
     private int today;

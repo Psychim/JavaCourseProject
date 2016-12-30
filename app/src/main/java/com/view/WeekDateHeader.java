@@ -8,6 +8,9 @@ import android.util.AttributeSet;
  * Created by aiocac on 2016/12/19.
  */
 
+/**
+ * 列头，显示一周七天的日期，Global时间用特殊颜色标记
+ */
 public class WeekDateHeader extends WeekHeader {
 
     /**

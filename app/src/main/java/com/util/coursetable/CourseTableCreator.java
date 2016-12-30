@@ -13,11 +13,20 @@ import com.util.network.HttpRequest._METHOD;
 import com.util.network.*;
 import com.util.sql.StudentQuery;
 
+/**
+ * 用于获取课表
+ */
 public class CourseTableCreator implements Callable<CourseTable>{
     private Context context;
+    /**
+     * 网页参数
+     */
     private String returnStr;
     private String queryStudentId;
     private String queryAcademicYear;
+    /**
+     * 解析网页需要的RegEx
+     */
     private final static String courseNameRegex="<td height=\"34\" class=\"line_topleft\" width=\"35%\" align=\"center\"><font class=\"style8\">(.*?)</font></td>";
     private final static String TeacherRegex="<td height=\"34\"  class=\"line_topleft\" width=\"20%\" align=\"center\"><font class=\"style8\">&nbsp;(.*?)</font></td>";
     private final static String CreditRegex="<td height=\"34\" class=\"line_topleft\" width=\"15%\" align=\"center\">&nbsp;([0-9.]*)</td>";
@@ -45,6 +54,11 @@ public class CourseTableCreator implements Callable<CourseTable>{
     public void setYear(String pYear){
         queryAcademicYear=pYear;
     }
+
+    /**
+     * TODO 发送请求
+     * @return 课表网页
+     */
     public String sendRequest(){
         String page;
         HttpRequest request=new HttpRequest();
@@ -67,8 +81,14 @@ public class CourseTableCreator implements Callable<CourseTable>{
         }
         return page;
     }
+
+    /**
+     * TODO 解析网页，获取课程信息
+     */
     public Map<String,Course> getCourses(String page){
-        //get the number of courses and their names
+        /**
+         * 获取课程名和总的课程数
+         */
         Matcher mcher=Pattern.compile(courseNameRegex).matcher(page);
         List<Course> courses=new ArrayList<Course>();
         while(mcher.find()){
@@ -77,7 +97,9 @@ public class CourseTableCreator implements Callable<CourseTable>{
             courses.add(new Course(courseName));
             System.out.println(courseName);
         }
-        // get teacher
+        /**
+         * 获取教师
+         */
         mcher=Pattern.compile(TeacherRegex).matcher(page);
         for(Course course:courses) {
             if(mcher.find()) {
@@ -86,7 +108,9 @@ public class CourseTableCreator implements Callable<CourseTable>{
                 course.teacher=teacher;
             }
         }
-        //get credit
+        /**
+         * 获取学分
+         */
         mcher=Pattern.compile(CreditRegex).matcher(page);
         for(Course course:courses) {
             if (mcher.find() )
@@ -97,7 +121,9 @@ public class CourseTableCreator implements Callable<CourseTable>{
                     e.printStackTrace();
                 }
         }
-        //get the week when the course starts and the week when the course ends
+        /**
+         * 获取开始周和结束周
+         */
         mcher=Pattern.compile(WeekRegex).matcher(page);
         for(Course course:courses) {
             if (mcher.find()) {
@@ -111,6 +137,9 @@ public class CourseTableCreator implements Callable<CourseTable>{
                 }
             }
         }
+        /**
+         * 构造一个课程名和课程一一对应的map
+         */
         Map<String,Course> coursemap=new HashMap<String,Course>();
         for(Course course:courses){
             coursemap.put(course.coursename,course);
@@ -119,37 +148,68 @@ public class CourseTableCreator implements Callable<CourseTable>{
     }
 
     /**
-     * TODO get the arrangement of courses
-     * @param page the web page of the course table
-     * @return a map from arrangement to course name
+     * TODO 获取课程安排
      */
     public Map<Arrangement,String> getArrangement(String page){
-        //get weekday, segment and classroom
         Map<Arrangement,String> Arr2Name=new HashMap<Arrangement,String>();
         Matcher mcher;
+        /**
+         * 先获取工作日白天的部分
+         */
         mcher=Pattern.compile(WeekdayDaytimeRegex).matcher(page);
         Matcher infomcher;
+        /**
+         * 表示周几的序号
+         */
         int start=0;
         int end=4;
+        /**
+         * i==0  上午
+         * i==1  下午
+         * i==2  晚上
+         * i==3  周六
+         * i==4  周日
+         */
         for(int i=0;i<5;i++){
             if(i==1){
-                mcher.find();   //jump “下午”
+                /**
+                 * mcher会匹配到"下午"，调用一次find()跳过
+                 */
+                mcher.find();
             }
+            /**
+             * 获取工作日晚上的部分
+             */
             else if(i==2){
                 mcher=Pattern.compile(WeekdayNightRegex).matcher(page);
             }
+            /**
+             * 获取周六的部分
+             */
             else if(i==3){
                 mcher=Pattern.compile(SaturdayRegex).matcher(page);
                 start=end=5;
             }
+            /**
+             * 获取周日的部分
+             */
             else if(i==4){
                 mcher=Pattern.compile(SundayRegex).matcher(page);
                 start=end=6;
             }
             for(int j=start;j<=end;j++){
+                /**
+                 * 当前序号对应wd
+                 */
                 _WEEKDAY wd=_WEEKDAY.values()[j];
                 if(mcher.find()){
+                    /**
+                     * 从已获取的网页部分中匹配课程安排信息
+                     */
                     infomcher=Pattern.compile(TableInfoRegex).matcher(mcher.group(1));
+                    /**
+                     * 每个时间块可能不止一节课
+                     */
                     while(infomcher.find())
                         try{
                             String courseName=infomcher.group(1);
@@ -166,6 +226,10 @@ public class CourseTableCreator implements Callable<CourseTable>{
         }
         return Arr2Name;
     }
+
+    /**
+     * TODO 根据课程名将所有课程和安排结合得到课程实例以创建课表
+     */
     public CourseTable CreateTable(Map<Arrangement,String> arr2name,Map<String,Course> name2course){
         CourseTable ct=new CourseTable();
         for(Arrangement arr:arr2name.keySet()){
@@ -177,6 +241,11 @@ public class CourseTableCreator implements Callable<CourseTable>{
         ct.setAcaYear(queryAcademicYear);
         return ct;
     }
+
+    /**
+     * TODO 爬取课表，存入数据库并返回
+     * @return
+     */
     public CourseTable obtainCourseTable(){
         if(queryStudentId==null||queryStudentId.isEmpty()||queryAcademicYear==null||queryAcademicYear.isEmpty())
             return null;
@@ -190,6 +259,11 @@ public class CourseTableCreator implements Callable<CourseTable>{
         }
         else return null;
     }
+
+    /**
+     * TODO 先从数据库里获取课表，若失败则爬取课表
+     * @return
+     */
     @Override
     public CourseTable call(){
         if(queryStudentId==null||queryStudentId.isEmpty()||queryAcademicYear==null||queryAcademicYear.isEmpty())

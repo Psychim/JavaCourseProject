@@ -5,7 +5,7 @@ package com.util.coursetable;
  */
 
 /**
- * a course instance with a specific arrangement;
+ * 一个具体的带有安排的课程实例
  */
 public class CourseInstance {
     public Course C;

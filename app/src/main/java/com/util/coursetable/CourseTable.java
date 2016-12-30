@@ -8,6 +8,9 @@ import java.util.Set;
  * Created by aiocac on 2016/12/12.
  */
 
+/**
+ * 课程表
+ */
 public class CourseTable implements Iterable<CourseInstance> {
     private Set<CourseInstance> courses;
     private String stuID;

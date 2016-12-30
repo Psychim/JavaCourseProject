@@ -13,7 +13,13 @@ import android.view.ViewGroup;
  * Created by aiocac on 2016/12/19.
  */
 
+/**
+ * 行头，显示节数
+ */
 public class RowHeader extends ViewGroup {
+    /**
+     * 每天总节数
+     */
     private int lessonNum;
     /**
      * Simple constructor to use when creating a view from code.

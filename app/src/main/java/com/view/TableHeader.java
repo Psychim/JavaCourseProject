@@ -13,6 +13,9 @@ import android.widget.TextView;
  * Created by aiocac on 2016/12/19.
  */
 
+/**
+ * 表头，显示月份
+ */
 public class TableHeader extends HeaderItem {
     private int month;
     /**

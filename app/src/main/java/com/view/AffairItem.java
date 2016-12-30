@@ -15,6 +15,9 @@ import com.util.affair.Affair;
  * Created by aiocac on 2016/12/29.
  */
 
+/**
+ * 事务item
+ */
 public class AffairItem extends RelativeLayout {
     Affair affair;
     public AffairItem(Context context) {

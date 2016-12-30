@@ -4,6 +4,9 @@ import java.util.concurrent.*;
 
 import com.util.network.HttpRequest._METHOD;
 
+/**
+ * http请求线程
+ */
 public class HttpRequestThread implements Callable<String> {
     private HttpRequest request;
     public HttpRequestThread(){}

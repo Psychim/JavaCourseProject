@@ -16,6 +16,9 @@ import java.sql.Statement;
  * Created by aiocac on 2016/12/23.
  */
 
+/**
+ * 处理sqlite的query
+ */
 public class SqliteQuery {
     protected Context context;
     protected SQLiteDatabase db;
@@ -23,6 +26,10 @@ public class SqliteQuery {
         context=pContext;
         db=null;
     }
+
+    /**
+     * TODO 检查表是否存在
+     */
     public boolean isTableExist(String tableName){
         boolean result=false;
         if(tableName==null||db==null||!db.isOpen())

@@ -25,6 +25,9 @@ import java.util.TreeMap;
  * Created by aiocac on 2016/12/19.
  */
 
+/**
+ * 课程容器
+ */
 public class CourseTableContainer extends ViewGroup {
     private int lessonNum;
     private static final int[] drawable={R.drawable.course_item_01,R.drawable.course_item_02,R.drawable.course_item_03

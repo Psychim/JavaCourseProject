@@ -17,6 +17,9 @@ import com.util.coursetable.CourseInstance;
  * Created by aiocac on 2016/12/19.
  */
 
+/**
+ * 课程item
+ */
 public class CourseItem extends Button {
     private CourseInstance courseInstance;
     /**

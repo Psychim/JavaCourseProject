@@ -21,10 +21,16 @@ import com.util.Constant.*;
  * Created by aiocac on 2016/12/23.
  */
 
+/**
+ * 处理student库的query
+ */
 public class StudentQuery extends SqliteQuery{
+    /**
+     * @value student数据库名
+     */
     final private static String DBName="student.db";
     /**
-     * COLUMN NAMES
+     * 字段头
      */
     final private static String COURSE_NAME="COURSE_NAME";
     final private static String TEACHER="TEACHER";
@@ -47,6 +53,10 @@ public class StudentQuery extends SqliteQuery{
         db= SqliteManager.getInstance().getConnection(context.getFilesDir().getAbsolutePath()+"/"+DBName);
         TryCreateTable();
     }
+
+    /**
+     * TODO 检查COURSEINSTANCE和AFFAIR两表，表不存在则建表
+     */
     private void TryCreateTable(){
         /*if(isTableExist("COURSEINSTANCE")){
             db.execSQL("DROP TABLE COURSEINSTANCE");
@@ -77,26 +87,32 @@ public class StudentQuery extends SqliteQuery{
             db.execSQL(query);
         }
     }
-    public boolean isCourseInstanceExist(CourseInstance ci,String stuID,String acaYear){
-        boolean result=false;
-        String query = "SELECT * FROM COURSEINSTANCE WHERE "+COURSE_NAME+"=?"
-                + " AND "+WEEKDAY+"=?"+
-                " AND "+SEG_START+"=?"+" AND "+STUCARD_ID+"=?"+" AND "+
-                ACADEMICYEAR +"=?";
-        Cursor cursor = db.rawQuery(query,new String[]{ci.C.getCoursename(),ci.A.getWeekday().name(),
-                Integer.toString(ci.A.getSegStart()),stuID,acaYear});
-        if(cursor.getCount()>0)
-            result=true;
-        return result;
-    }
-    public void DeleteCourseInstance(CourseInstance ci,String stuID,String acaYear){
-        String query = "DELETE FROM COURSEINSTANCE WHERE "+COURSE_NAME+"=?"
-                + " AND "+WEEKDAY+"=?"+
-                " AND "+SEG_START+"=?"+" AND "+STUCARD_ID+"=?"+" AND "
-                +ACADEMICYEAR +"=?";
-        db.execSQL(query,new String[]{ci.C.getCoursename(),ci.A.getWeekday().name(),
-        Integer.toString(ci.A.getSegStart()),stuID,acaYear});
-    }
+
+//
+//    public boolean isCourseInstanceExist(CourseInstance ci,String stuID,String acaYear){
+//        boolean result=false;
+//        String query = "SELECT * FROM COURSEINSTANCE WHERE "+COURSE_NAME+"=?"
+//                + " AND "+WEEKDAY+"=?"+
+//                " AND "+SEG_START+"=?"+" AND "+STUCARD_ID+"=?"+" AND "+
+//                ACADEMICYEAR +"=?";
+//        Cursor cursor = db.rawQuery(query,new String[]{ci.C.getCoursename(),ci.A.getWeekday().name(),
+//                Integer.toString(ci.A.getSegStart()),stuID,acaYear});
+//        if(cursor.getCount()>0)
+//            result=true;
+//        return result;
+//    }
+//    public void DeleteCourseInstance(CourseInstance ci,String stuID,String acaYear){
+//        String query = "DELETE FROM COURSEINSTANCE WHERE "+COURSE_NAME+"=?"
+//                + " AND "+WEEKDAY+"=?"+
+//                " AND "+SEG_START+"=?"+" AND "+STUCARD_ID+"=?"+" AND "
+//                +ACADEMICYEAR +"=?";
+//        db.execSQL(query,new String[]{ci.C.getCoursename(),ci.A.getWeekday().name(),
+//        Integer.toString(ci.A.getSegStart()),stuID,acaYear});
+//    }
+
+    /**
+     * TODO 在COURSEINSTANCE表中插入一个课程实例
+     */
     public void InsertCourseInstance(CourseInstance ci,String stuID,String acaYear){
         String query = "INSERT INTO COURSEINSTANCE "+
                 "("+COURSE_NAME+','+TEACHER+','+CREDIT+','+WEEK_START+','+
@@ -108,6 +124,13 @@ public class StudentQuery extends SqliteQuery{
             ci.A.getWeekday().name(),Integer.toString(ci.A.getSegStart()),Integer.toString(ci.A.getSegEnd()),
             ci.A.getClassroom(),stuID,acaYear});
     }
+
+    /**
+     * TODO 从数据库中获取课表
+     * @param stuID 一卡通号
+     * @param acaYear 学期
+     * @return 课表
+     */
     public CourseTable getCourseTable(String stuID,String acaYear){
         CourseTable ct=null;
         Course co=null;
@@ -136,30 +159,57 @@ public class StudentQuery extends SqliteQuery{
         }
         return ct;
     }
+
+    /**
+     * TODO 保存课表ct
+     * @param ct 课表
+     */
     public void SaveCourseTable(CourseTable ct){
         String stuID=ct.getStuID();
         String acaYear=ct.getAcaYear();
+        /**
+         * 删除已存在的同一学生同一学期的所有课程信息
+         */
         String query="DELETE FROM COURSEINSTANCE WHERE "+STUCARD_ID+"=?"+" AND "+ACADEMICYEAR+"=?";
         db.execSQL(query,new String[]{stuID,acaYear});
         for (CourseInstance ci : ct) {
             InsertCourseInstance(ci, stuID,acaYear);
         }
     }
+
+    /**
+     * TODO 更新事务信息
+     */
     public void updateAffair(Affair affair){
         String query="UPDATE AFFAIR SET "+CONTENT+"=?, "+DATE+"=?,"+TIME+"=? WHERE "+ID +"=?";
         db.execSQL(query,new String[]{affair.getContent(),affair.getDateString(),affair.getTimeString(),
             affair.getID().toString()});
     }
+
+    /**
+     * TODO 删除事务
+     */
     public void deleteAffair(Affair affair){
         String query="DELETE FROM AFFAIR WHERE "+ID+"=?";
         db.execSQL(query,new String[]{affair.getID().toString()});
     }
+
+    /**
+     * TODO 保存事务信息
+     */
     public void saveAffair(Affair affair,String stuID){
         String query="INSERT INTO AFFAIR ("+CONTENT+","+DATE+","+TIME+","+STUCARD_ID+")"+
                 " VALUES(?,?,?,?)";
         db.execSQL(query,new String[]{affair.getContent(),affair.getDateString(),
                 affair.getTimeString(),stuID});
     }
+
+    /**
+     * TODO 从数据库获取学生某天的事务
+     * @param stuID 一卡通号
+     * @param date 日期
+     * @return 事务List
+     */
     public List<Affair> getAffairs(String stuID, Date date){
         String query="SELECT "+ID+","+ CONTENT+","+TIME+" FROM AFFAIR WHERE "+STUCARD_ID +
                 "=? AND "+DATE+"=?";

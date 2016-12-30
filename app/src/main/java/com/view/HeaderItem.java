@@ -13,6 +13,9 @@ import com.example.scm.calendar.R;
  * Created by aiocac on 2016/12/26.
  */
 
+/**
+ * 表头item
+ */
 public class HeaderItem extends TextView {
     public HeaderItem(Context context) {
         super(context);

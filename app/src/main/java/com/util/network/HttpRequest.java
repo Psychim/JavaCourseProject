@@ -11,8 +11,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.regex.*;
 /**
- * 发送http请求
- * @author 施超敏
+ * 用于发送http请求
  *
  */
 public class HttpRequest {
@@ -42,6 +41,11 @@ public class HttpRequest {
     public void setMethod(_METHOD pMethod){
         method=pMethod;
     }
+
+    /**
+     * TODO 根据method决定发送post还是get请求
+     * @return
+     */
     public String send(){
         if(url!=null&&!url.isEmpty()){
             switch(method){
@@ -53,20 +57,36 @@ public class HttpRequest {
         }
         return null;
     }
+
+    /**
+     * TODO 发送get请求
+     * @return
+     */
     public String sendGet(){
         String result=null;
         BufferedReader in =null;
         try{
+            /**
+             * 初始化url字符串
+             */
             String urlString=url+"?"+param;
             URL urlObj=new URL(urlString);
             URLConnection connection=urlObj.openConnection();
+            /**
+             * 设置请求参数
+             */
             connection.setRequestProperty("User-Agent"," Mozilla/5.0 (Windows NT 10.0; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0");
             connection.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
             if(cookie!=null&&!cookie.isEmpty())
                 connection.setRequestProperty("Cookie",cookie);
+            /**
+             * 发送
+             */
             connection.connect();
             Map<String,List<String>> map=connection.getHeaderFields();
-            //获取网页字符集
+            /**
+             * 获取网页使用的字符集
+             */
             String charset="GBK";
             List<String> values=map.get("Content-Type");
             if(values!=null&&!values.isEmpty()) {
@@ -77,6 +97,9 @@ public class HttpRequest {
                     }
                 }
             }
+            /**
+             * 解码网页
+             */
             in=new BufferedReader(new InputStreamReader(connection.getInputStream(),charset));
             String line;
             while((line=in.readLine())!=null){
@@ -96,6 +119,11 @@ public class HttpRequest {
         }
         return result;
     }
+
+    /**
+     * TODO 发送POST请求
+     * @return
+     */
     public String sendPost(){
         String result="";
         BufferedReader in =null;
@@ -104,19 +132,27 @@ public class HttpRequest {
             String urlString=url;
             URL urlObj=new URL(urlString);
             URLConnection connection=urlObj.openConnection();
+            /**
+             * 设置请求参数
+             */
             connection.setRequestProperty("User-Agent"," Mozilla/5.0 (Windows NT 10.0; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0");
             connection.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
             connection.setRequestProperty("accept","*/*");
             connection.setRequestProperty("connection","Keep-Alive");
             if(cookie!=null&&!cookie.isEmpty())
                 connection.setRequestProperty("Cookie",cookie);
+            /**
+             * 发送
+             */
             connection.setDoOutput(true);
             connection.setDoInput(true);
             out=new PrintWriter(connection.getOutputStream());
             out.print(param);
             out.flush();
+            /**
+             * 获取网页字符集
+             */
             Map<String,List<String>> map=connection.getHeaderFields();
-            //获取网页字符集
             String charset="GBK";
             List<String> values=map.get("Content-Type");
             if(values!=null&&!values.isEmpty()) {
@@ -127,6 +163,9 @@ public class HttpRequest {
                     }
                 }
             }
+            /**
+             * 解码网页
+             */
             in=new BufferedReader(new InputStreamReader(connection.getInputStream(),charset));
             String line;
             while((line=in.readLine())!=null){
